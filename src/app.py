@@ -40,16 +40,31 @@ def handle_hello():
 def add_member():
     member = request.json
     if member is None:
-        return jsonify({"message":"Invalid Name"}), 400
+        return jsonify({"message":"Invalid name"}), 400
     jackson_family.add_member(member)
-    return jsonify({"message":"Family Member added succesfully"}), 200
+    return jsonify({"message":"Family member added succesfully"}), 200
 
 @app.route('/member/<int:member_id>', methods=['DELETE'])
 def delete_member(member_id):
     member = jackson_family.delete_member(member_id)
-    if not member:
+    if member is None:
         return jsonify({"message":"ID doesn't exist"})
-    return jsonify(member)
+    return jsonify(member), 200
+
+@app.route('/member/<int:member_id>', methods=['GET'])
+def get_member(member_id):
+    member = jackson_family.get_member(member_id)
+    if member is None:
+        return jsonify({"message":"Family member doesn't exist"}), 400
+    return jsonify(member), 200
+
+@app.route('/member/<int:member_id>', methods=['PUT'])
+def update_member(member_id):
+    member = request.json
+    jackson_family.update_member(member_id, member)
+    if member is None:
+        return jsonify({"message":"Invalid name"}), 400
+    return jsonify(member), 200
 
 
 
